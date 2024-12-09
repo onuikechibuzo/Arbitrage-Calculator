@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arbitrage Calculator</title>
+    <style>
+        /* Base Reset */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Header */
+        header {
+            background-color: #0a660e;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* Main Wrapper */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 20px;
+        }
+
+        /* Form Section */
+        .form-section {
+            flex: 1;
+        }
+
+        h2 {
+            text-align: center;
+            color: #0a660e;
+        }
+
+        form {
+            margin-top: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #0a660e;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #084a09;
+        }
+
+        /* Results Section */
+        .results-section {
+            flex: 1;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .results-section h3 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #0a660e;
+        }
+
+        .results-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .results-section li {
+            padding: 5px 0;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .results-section strong {
+            display: inline-block;
+            width: 120px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>Arbitrage Calculator</header>
+
+    <div class="container">
+        <!-- Form Section -->
+        <div class="form-section">
+            <h2>Calculate Your Arbitrage</h2>
+            <form id="calculator-form">
+                <div class="form-group">
+                    <label for="odds1">Bet 1 Odds</label>
+                    <input type="number" id="odds1" placeholder="Enter Bet 1 Odds" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="odds2">Bet 2 Odds</label>
+                    <input type="number" id="odds2" placeholder="Enter Bet 2 Odds" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="stake">Total Stake</label>
+                    <input type="number" id="stake" placeholder="Enter Total Stake" step="0.01" required>
+                </div>
+                <button type="button" id="calculate">Calculate</button>
+            </form>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="results" style="display: none;">
+            <h3>Results</h3>
+            <ul>
+                <li><strong>Stake Bet 1:</strong> <span id="stake1">$0.00</span></li>
+                <li><strong>Stake Bet 2:</strong> <span id="stake2">$0.00</span></li>
+                <li><strong>Total Payout:</strong> <span id="payout">$0.00</span></li>
+                <li><strong>Total Profit:</strong> <span id="profit">$0.00</span></li>
+                <li><strong>ROI:</strong> <span id="roi">0.00%</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>&copy; 2024 Arbitrage Calculator. All rights reserved.</footer>
+
+    <script>
+        document.getElementById('calculate').addEventListener('click', function () {
+            const odds1 = parseFloat(document.getElementById('odds1').value);
+            const odds2 = parseFloat(document.getElementById('odds2').value);
+            const stake = parseFloat(document.getElementById('stake').value);
+
+            // Validate Inputs
+            if (isNaN(odds1) || isNaN(odds2) || isNaN(stake) || odds1 <= 1 || odds2 <= 1 || stake <= 0) {
+                alert('Please enter valid odds and stake!');
+                return;
+            }
+
+            // Calculate
+            const sumInverseOdds = 1 / odds1 + 1 / odds2;
+            const stake1 = (1 / odds1 / sumInverseOdds) * stake;
+            const stake2 = (1 / odds2 / sumInverseOdds) * stake;
+            const payout = stake1 * odds1; // Same as stake2 * odds2
+            const profit = payout - stake;
+            const roi = (profit / stake) * 100;
+
+            // Update Results
+            document.getElementById('stake1').textContent = `$${stake1.toFixed(2)}`;
+            document.getElementById('stake2').textContent = `$${stake2.toFixed(2)}`;
+            document.getElementById('payout').textContent = `$${payout.toFixed(2)}`;
+            document.getElementById('profit').textContent = `$${profit.toFixed(2)}`;
+            document.getElementById('roi').textContent = `${roi.toFixed(2)}%`;
+
+            // Show Results
+            document.getElementById('results').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
